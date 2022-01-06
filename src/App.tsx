@@ -1,25 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { DragProvider } from "./components/Drag/DragProvider";
+import DashBoard from "./pages/Dashboard";
+import { HexagonTile } from "./types/HexagonTile";
+import "./styles.css";
 
+const initialTiles: HexagonTile[] = [
+  {
+    id: "a1",
+    position: {
+      x: 2,
+      y: 1,
+    },
+    content: "primera",
+  },
+  {
+    id: "a2",
+    position: {
+      x: 3,
+      y: 2,
+    },
+    content: "segunda",
+  },
+];
 function App() {
+  const [tiles, setTiles] = useState(initialTiles);
+
+  const addTile = (tile: Omit<HexagonTile, "id">) => {
+    const getId = () => "_" + Math.random().toString(36).substr(2, 9);
+    setTiles([...tiles, { ...tile, id: getId() }]);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <DragProvider tiles={tiles} onChange={setTiles}>
+      <div className="container">
+        <DashBoard addTile={addTile} />
+      </div>
+    </DragProvider>
   );
 }
 
