@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { DragProvider } from "./components/Drag/DragProvider";
 import DashBoard from "./pages/Dashboard";
 import { HexagonTile } from "./types/HexagonTile";
-import "./styles.css";
 
 const initialTiles: HexagonTile[] = [
   {
@@ -22,6 +21,7 @@ const initialTiles: HexagonTile[] = [
     content: "segunda",
   },
 ];
+
 function App() {
   const [tiles, setTiles] = useState(initialTiles);
 
@@ -32,9 +32,7 @@ function App() {
 
   return (
     <DragProvider tiles={tiles} onChange={setTiles}>
-      <div className="container">
-        <DashBoard addTile={addTile} />
-      </div>
+      <DashBoard addTile={addTile} />
     </DragProvider>
   );
 }

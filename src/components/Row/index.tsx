@@ -7,7 +7,7 @@ type Props = {
 const Row = styled.div<Props>`
   display: flex;
   gap: 2px;
-  margin-top: -98px;
+  margin-top: -100px;
   padding-left: ${(props) => (props.odd ? "100px" : 0)};
 `;
 

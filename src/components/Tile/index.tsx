@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import React, { MouseEvent, useRef, useState } from "react";
+import React from "react";
 import { useDrag } from "../Drag/DragProvider";
 
 const Container = styled.div``;
@@ -24,7 +24,7 @@ const Background = styled.div<{ actived: boolean }>`
 `;
 
 type Props = {
-  dragId: string;
+  dragId?: string;
   onCreate: (content: string) => void;
 };
 

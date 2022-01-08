@@ -1,95 +1,59 @@
-import styled from "@emotion/styled";
-import React, { MouseEvent, useRef, useState } from "react";
-import { Global, css } from "@emotion/react";
-import { useDrag } from "./DragProvider";
+import React, { useRef } from "react";
+import { useDrag as useDragProvider } from "./DragProvider";
+import { animated, useSpring } from "@react-spring/web";
+import { useDrag } from "@use-gesture/react";
 
-const disableSelection = css`
-  body {
-    user-select: none;
-  }
-`;
-
-const Container = styled.div<{ dragging: Boolean }>`
-  width: 200px;
-  height: 200px;
-  cursor: pointer;
-  background-image: url("https://source.unsplash.com/random/150x150");
-  background-size: cover;
-  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
-  position: absolute;
-  z-index: ${({ dragging }) => (dragging ? 2 : 1)};
-  transition: ${({ dragging }) => (dragging ? "none" : "transform .2s")};
-`;
+const styles = {
+  width: 200,
+  height: 200,
+  cursor: "pointer",
+  position: "relative",
+  backgroundImage: "url(https://source.unsplash.com/random/150x150)",
+  backgroundSize: "cover",
+  clipPath: "polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%",
+} as React.CSSProperties;
 
 const Drag: React.FC<{ id: string }> = ({ children, id }) => {
-  const { onDrag, onDragEnd } = useDrag();
-  const dragRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const timer = useRef<NodeJS.Timeout>();
-  const [start, setStart] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
-  const onMouseMove = (ev: MouseEvent<HTMLDivElement>) => {
-    if (!isDragging) return;
+  const { onDrag, onDragEnd } = useDragProvider();
+  const [{ x, y, zIndex }, api] = useSpring(() => ({
+    x: 0,
+    y: 0,
+    zIndex: 1,
+  }));
 
-    onDrag(ev);
+  useDrag(
+    ({ down, movement: [mx, my], active, xy: [x, y] }) => {
+      api.start({
+        x: down ? mx : 0,
+        y: down ? my : 0,
+        zIndex: down ? 3 : 1,
+        immediate: (key: string) => down || key === "zIndex",
+      });
 
-    setPosition({
-      x: ev.clientX - start.x,
-      y: ev.clientY - start.y,
-    });
-  };
+      if (ref.current) {
+        ref.current.hidden = true;
+      }
 
-  const onMouseDown = (ev: MouseEvent<HTMLDivElement>) => {
-    setIsDragging(true);
+      if (active) {
+        onDrag({ x, y });
+      } else {
+        onDragEnd({ x, y }, id);
+      }
 
-    const refPosition = dragRef.current?.getBoundingClientRect();
-    if (refPosition) {
-      setStart({ x: ev.clientX, y: ev.clientY });
-    }
-  };
-
-  const reset = () => {
-    setIsDragging(false);
-    setStart({ x: 0, y: 0 });
-    setPosition({ x: 0, y: 0 });
-  };
-
-  const onMouseUp = (ev: MouseEvent<HTMLDivElement>) => {
-    onDragEnd(ev, id);
-    reset();
-  };
-
-  const onMouseOver = () => {
-    if (isDragging && timer.current) {
-      clearTimeout(timer.current);
-    }
-  };
-
-  const onMouseOut = () => {
-    if (isDragging) {
-      timer.current = setTimeout(reset, 300);
-    }
-  };
+      if (ref.current) {
+        ref.current.hidden = false;
+      }
+    },
+    { target: ref }
+  );
 
   return (
     <>
-      <Global styles={isDragging && disableSelection} />
-
-      <Container
-        ref={dragRef}
-        style={{
-          transform: `translate(${position.x}px, ${position.y}px)`,
-        }}
-        onMouseUp={onMouseUp}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseOut={onMouseOut}
-        onMouseOver={onMouseOver}
-        dragging={isDragging}
-      >
+      <animated.div ref={ref} style={{ x, y, zIndex, ...styles }}>
         {children}
-      </Container>
+      </animated.div>
     </>
   );
 };

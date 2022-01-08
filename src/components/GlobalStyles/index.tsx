@@ -2,7 +2,8 @@ import { Global, css } from "@emotion/react";
 
 const styles = css`
   body {
-    padding: 24px;
+    user-select: none;
+    margin: 0;
   }
 `;
 

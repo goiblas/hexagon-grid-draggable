@@ -2,7 +2,6 @@ import {
   createContext,
   useState,
   useContext,
-  MouseEvent,
   useCallback,
   useEffect,
 } from "react";
@@ -11,11 +10,15 @@ import { Board, HexagonTile } from "../../types/HexagonTile";
 type State = {
   selected: string | null;
   isDragging: boolean;
-  onDrag: (ev: MouseEvent<HTMLDivElement>) => void;
-  onDragEnd: (ev: MouseEvent<HTMLDivElement>, id?: string) => void;
+  onDrag: (coords: Coords) => void;
+  onDragEnd: (coords: Coords, id?: string) => void;
   board: Board;
 };
 
+type Coords = {
+  x: number;
+  y: number;
+};
 const DragContext = createContext<State | null>(null);
 
 type Props = {
@@ -54,30 +57,27 @@ export const DragProvider: React.FC<Props> = ({
     });
   }, [tiles]);
 
-  const onDrag = useCallback((ev: MouseEvent<HTMLDivElement>) => {
+  const onDrag = useCallback((coords: Coords) => {
     setIsDragging(true);
-    ev.currentTarget.hidden = true;
-    const elemBelow = document.elementFromPoint(ev.clientX, ev.clientY);
+    const elemBelow = document.elementFromPoint(coords.x, coords.y);
 
     if (elemBelow) {
       const attrId = elemBelow.getAttribute("data-tile-id");
       setSelected(attrId);
     }
-    ev.currentTarget.hidden = false;
   }, []);
 
   const onDragEnd = useCallback(
-    (ev: MouseEvent<HTMLDivElement>, id) => {
-      setIsDragging(false);
+    (coords: Coords, id) => {
       if (!id) {
         return;
       }
-      ev.currentTarget.hidden = true;
 
-      let elemBelow = document.elementFromPoint(ev.clientX, ev.clientY);
+      let elemBelow = document.elementFromPoint(coords.x, coords.y);
 
       if (elemBelow) {
         const attrId = elemBelow.getAttribute("data-tile-id");
+
         if (attrId) {
           const [x, y] = attrId.split("-").map(Number);
           const match = tiles.find((tile) => tile.id === id);
@@ -91,14 +91,13 @@ export const DragProvider: React.FC<Props> = ({
               }
               return tile;
             });
-
             onChange(tilesUpdated);
           }
 
           setSelected(null);
         }
       }
-      ev.currentTarget.hidden = false;
+      setIsDragging(false);
     },
     [tiles, onChange]
   );
