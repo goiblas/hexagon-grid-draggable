@@ -18,6 +18,7 @@ type State = {
 type Coords = {
   x: number;
   y: number;
+  ref: HTMLElement;
 };
 const DragContext = createContext<State | null>(null);
 
@@ -59,7 +60,9 @@ export const DragProvider: React.FC<Props> = ({
 
   const onDrag = useCallback((coords: Coords) => {
     setIsDragging(true);
+    coords.ref.hidden = true;
     const elemBelow = document.elementFromPoint(coords.x, coords.y);
+    coords.ref.hidden = false;
 
     if (elemBelow) {
       const attrId = elemBelow.getAttribute("data-tile-id");
@@ -72,8 +75,9 @@ export const DragProvider: React.FC<Props> = ({
       if (!id) {
         return;
       }
-
+      coords.ref.hidden = true;
       let elemBelow = document.elementFromPoint(coords.x, coords.y);
+      coords.ref.hidden = false;
 
       if (elemBelow) {
         const attrId = elemBelow.getAttribute("data-tile-id");

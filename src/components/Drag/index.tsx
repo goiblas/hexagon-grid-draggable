@@ -32,21 +32,18 @@ const Drag: React.FC<{ id: string }> = ({ children, id }) => {
         immediate: (key: string) => down || key === "zIndex",
       });
 
-      if (ref.current) {
-        ref.current.hidden = true;
-      }
+      if (!ref.current) return;
 
       if (active) {
-        onDrag({ x, y });
+        onDrag({ x, y, ref: ref.current });
       } else {
-        onDragEnd({ x, y }, id);
-      }
-
-      if (ref.current) {
-        ref.current.hidden = false;
+        onDragEnd({ x, y, ref: ref.current }, id);
       }
     },
-    { target: ref }
+    {
+      target: ref,
+      eventOptions: { passive: false },
+    }
   );
 
   return (
