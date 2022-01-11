@@ -4,6 +4,7 @@ const styles = css`
   body {
     user-select: none;
     margin: 0;
+    overflow: hidden;
   }
 `;
 
