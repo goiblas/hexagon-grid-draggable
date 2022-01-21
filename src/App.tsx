@@ -4,6 +4,7 @@ import DashBoard from "./pages/Dashboard";
 import CanvasDrag from "./pages/CanvasDrag";
 import { HexagonTile } from "./types/HexagonTile";
 import Pinch from "./pages/Pinch";
+import CanvasSvg from "./pages/CanvasSvg";
 
 const initialTiles: HexagonTile[] = [
   {
@@ -42,9 +43,12 @@ function App() {
       {/* <Pinch actived={false}>
         <DashBoard addTile={addTile} />
       </Pinch> */}
-      <CanvasDrag enabled={true}>
+      <CanvasSvg enabled={true}>
         <DashBoard addTile={addTile} />
-      </CanvasDrag>
+      </CanvasSvg>
+      {/* <CanvasDrag enabled={true}>
+        <DashBoard addTile={addTile} />
+      </CanvasDrag> */}
     </DragProvider>
   );
 }
