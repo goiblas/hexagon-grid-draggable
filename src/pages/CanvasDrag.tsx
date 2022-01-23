@@ -16,7 +16,6 @@ import {
 } from "@use-gesture/react";
 import styled from "@emotion/styled";
 import clamp from "lodash-es/clamp";
-import { measureMemory } from "vm";
 
 const useGesture = createUseGesture([dragAction, wheelAction, pinchAction]);
 
