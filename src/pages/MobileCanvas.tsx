@@ -9,13 +9,13 @@ function dampen(val: number, [min, max]: [number, number]) {
     if (val > max) {
       const extra = val - max;
       const dampenedExtra = extra > 0 ? Math.sqrt(extra) : -Math.sqrt(-extra);
-      return max + dampenedExtra;
+      return max + dampenedExtra * 2;
     }
     
     if (val < min) {
       const extra = val - min;
       const dampenedExtra = extra > 0 ? Math.sqrt(extra) : -Math.sqrt(-extra);
-      return min + dampenedExtra;
+      return min + dampenedExtra * 2;
     }
     
     return val;
@@ -35,6 +35,9 @@ const Card = styled(motion.div)`
     user-select: none;
     -webkit-user-drag: none;
     width: min-content;
+     > * {
+         pointer-events: none;
+     }
 `;
 
 interface State {
@@ -164,7 +167,7 @@ const MobileCanvas: React.FC<Props> = ({  state, onChangeState, children }) => {
         },
         drag: {
             from: () => [x.get(), y.get()],
-            enabled: false
+            enabled: true
         }
     })
 
