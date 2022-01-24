@@ -8,6 +8,7 @@ import CanvasSvg from "./pages/CanvasSvg";
 import DashboardMovable from "./pages/DashboardMovable";
 import ImageCanvas from "./pages/ImageCanvas";
 import MobileCanvas from "./pages/MobileCanvas";
+import CanvasScroll from "./pages/CanvasScroll";
 
 const initialTiles: HexagonTile[] = [
   {
@@ -56,17 +57,24 @@ function App() {
       {/* <DashboardMovable enabled={true}>
         <DashBoard addTile={addTile} />
       </DashboardMovable> */}
-      <MobileCanvas 
+      {/* <MobileCanvas 
         state={canvasState}
         onChangeState={setCanvasState}
         >
         <DashBoard addTile={addTile} />
-      </MobileCanvas>
+      </MobileCanvas> */}
       {/* <ImageCanvas 
         state={canvasState}
         onChangeState={setCanvasState}
         src="http://i3.ytimg.com/vi/bNDCFBIiAe8/maxresdefault.jpg"
       /> */}
+
+      <CanvasScroll 
+        // state={canvasState}
+        // onChangeState={setCanvasState}
+        >
+        <DashBoard addTile={addTile} />
+      </CanvasScroll>
     </DragProvider>
   );
 }
