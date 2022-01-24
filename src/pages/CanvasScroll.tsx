@@ -18,7 +18,6 @@ const useScrollGesture = createUseGesture([scrollAction]);
 const Card = styled.div`
     position: relative;
     will-change: transform;
-    touch-action: none;
     user-select: none;
     -webkit-user-select: none;
     background: #fff;
